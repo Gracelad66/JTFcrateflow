@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrders } from '../hooks/useOrders';
 import { useProducts } from '../hooks/useProducts';
+import { supabase } from '../lib/supabase';
 import {
   Package,
   ShoppingCart,
@@ -10,12 +12,19 @@ import {
   Clock,
   Wallet,
   AlertTriangle,
+  Store,
+  Users,
 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { orders } = useOrders();
   const { products } = useProducts();
+  const [companyCount, setCompanyCount] = useState(0);
+
+  useEffect(() => {
+    supabase.from('companies').select('*', { count: 'exact', head: true }).then(({ count }) => setCompanyCount(count || 0));
+  }, []);
 
   const totalRevenue = orders.filter((o) => o.status === 'fulfilled' || o.status === 'pending').reduce((sum, o) => sum + o.total_amount, 0);
   const totalOrders = orders.length;
@@ -38,8 +47,8 @@ export default function AdminDashboard() {
   const stats = [
     { label: 'Total Revenue', value: `₦${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: 'bg-success-50 text-success-600' },
     { label: 'Total Orders', value: totalOrders, sub: `${pendingOrders} pending`, icon: ShoppingCart, color: 'bg-brand-50 text-brand-600' },
-    { label: 'Filled Stock', value: `${totalFilledStock}`, sub: 'crates', icon: Package, color: 'bg-accent-50 text-accent-700' },
-    { label: 'Empty Crates', value: `${totalEmptyStock}`, sub: 'crates', icon: Boxes, color: 'bg-slate-100 text-slate-600' },
+    { label: 'Sellers', value: companyCount, sub: 'companies', icon: Store, color: 'bg-accent-50 text-accent-700' },
+    { label: 'Total Products', value: products.length, sub: `${totalFilledStock} crates`, icon: Package, color: 'bg-slate-100 text-slate-600' },
   ];
 
   return (
@@ -109,6 +118,14 @@ export default function AdminDashboard() {
               Manage <ArrowRight className="w-4 h-4" />
             </button>
           </div>
+          {/* Sellers quick link */}
+          <button onClick={() => navigate('/admin/sellers')} className="w-full flex items-center justify-between p-2.5 mb-2 rounded-lg hover:bg-slate-50 transition-colors">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-accent-600" />
+              <span className="text-sm text-slate-700">Manage Sellers</span>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-400" />
+          </button>
           <div className="space-y-2">
             {products.length === 0 ? (
               <p className="text-sm text-slate-500 text-center py-6">No products added yet</p>

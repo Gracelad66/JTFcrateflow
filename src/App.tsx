@@ -9,6 +9,12 @@ import MyOrders from './pages/MyOrders';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
+import SellerDashboard from './pages/SellerDashboard';
+import SellerProducts from './pages/SellerProducts';
+import SellerOrders from './pages/SellerOrders';
+import Sellers from './pages/Sellers';
+import SellerStorefront from './pages/SellerStorefront';
+import AdminSellers from './pages/AdminSellers';
 import { Package } from 'lucide-react';
 
 function App() {
@@ -33,13 +39,21 @@ function App() {
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
         <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
         <Route element={<Layout />}>
-          <Route path="/" element={user?.role === 'admin' ? <AdminDashboard /> : <Catalog />} />
+          <Route path="/" element={user?.role === 'admin' ? <AdminDashboard /> : user?.role === 'seller' ? <SellerDashboard /> : <Catalog />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
           <Route path="/orders" element={user ? <MyOrders /> : <Navigate to="/login" />} />
+          <Route path="/sellers" element={<Sellers />} />
+          <Route path="/sellers/:slug" element={<SellerStorefront />} />
+          {/* Seller routes */}
+          <Route path="/seller" element={user?.role === 'seller' || user?.role === 'admin' ? <SellerDashboard /> : <Navigate to="/" />} />
+          <Route path="/seller/products" element={user?.role === 'seller' || user?.role === 'admin' ? <SellerProducts /> : <Navigate to="/" />} />
+          <Route path="/seller/orders" element={user?.role === 'seller' || user?.role === 'admin' ? <SellerOrders /> : <Navigate to="/" />} />
+          {/* Admin routes */}
           <Route path="/admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
           <Route path="/admin/products" element={user?.role === 'admin' ? <AdminProducts /> : <Navigate to="/" />} />
           <Route path="/admin/orders" element={user?.role === 'admin' ? <AdminOrders /> : <Navigate to="/" />} />
+          <Route path="/admin/sellers" element={user?.role === 'admin' ? <AdminSellers /> : <Navigate to="/" />} />
         </Route>
       </Routes>
     </BrowserRouter>

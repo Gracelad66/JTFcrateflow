@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { Package, Mail, Lock, User, Phone, AlertCircle, Loader2, Eye, EyeOff, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Package, Mail, Lock, User, Phone, AlertCircle, Loader2, Eye, EyeOff, ArrowLeft, CheckCircle2, Store } from 'lucide-react';
 import { REGISTER_PAGE } from '../config/content';
 
 export default function Register() {
@@ -13,6 +13,8 @@ export default function Register() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSeller, setIsSeller] = useState(false);
+  const [companyName, setCompanyName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +27,9 @@ export default function Register() {
     return score;
   })();
 
+  const slugify = (name: string) =>
+    name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/[\s-]+/g, '-').replace(/^-+|-+$/g, '');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -32,12 +37,22 @@ export default function Register() {
       setError('Password must be at least 6 characters.');
       return;
     }
+    if (isSeller && !companyName.trim()) {
+      setError('Please enter your business name.');
+      return;
+    }
     setLoading(true);
 
     const { data, error: signUpErr } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone } },
+      options: {
+        data: {
+          full_name: fullName,
+          phone,
+          role: isSeller ? 'seller' : 'customer',
+        },
+      },
     });
     if (signUpErr || !data.user) {
       setLoading(false);
@@ -50,8 +65,26 @@ export default function Register() {
       email,
       full_name: fullName,
       phone,
-      role: 'customer',
+      role: isSeller ? 'seller' : 'customer',
     });
+
+    if (isSeller) {
+      const slug = slugify(companyName);
+      const { data: companyData } = await supabase
+        .from('companies')
+        .insert({
+          name: companyName.trim(),
+          slug: slug || `seller-${Date.now()}`,
+          owner_id: data.user.id,
+          active: true,
+        })
+        .select()
+        .single();
+
+      if (companyData) {
+        await supabase.from('profiles').update({ company_id: companyData.id }).eq('id', data.user.id);
+      }
+    }
 
     const { error: signInErr } = await signIn(email, password);
     setLoading(false);
@@ -59,7 +92,7 @@ export default function Register() {
       navigate('/login');
       return;
     }
-    navigate('/catalog');
+    navigate(isSeller ? '/seller' : '/catalog');
   };
 
   const strengthLabel = ['Too short', 'Weak', 'Fair', 'Good', 'Strong'][passwordStrength];
@@ -76,7 +109,7 @@ export default function Register() {
             <div className="w-10 h-10 bg-white/15 backdrop-blur rounded-xl flex items-center justify-center">
               <Package className="w-6 h-6" strokeWidth={2.5} />
             </div>
-            <span className="font-display font-bold text-xl">CrateFlow</span>
+            <span className="font-display font-bold text-xl">CrateFlow NG</span>
           </div>
           <div className="relative">
             <h2 className="font-display text-4xl font-extrabold leading-tight mb-3 text-balance">
@@ -107,12 +140,54 @@ export default function Register() {
               <div className="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
                 <Package className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
-              <span className="font-display font-bold text-lg text-slate-900">CrateFlow</span>
+              <span className="font-display font-bold text-lg text-slate-900">CrateFlow NG</span>
             </div>
             <h1 className="font-display text-2xl font-bold text-slate-900 mb-1">{REGISTER_PAGE.formTitle}</h1>
             <p className="text-sm text-slate-500 mb-6">{REGISTER_PAGE.formSubtitle}</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Account type toggle */}
+              <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setIsSeller(false)}
+                  className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    !isSeller ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  <Package className="w-4 h-4" />
+                  Buyer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsSeller(true)}
+                  className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    isSeller ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  <Store className="w-4 h-4" />
+                  Seller
+                </button>
+              </div>
+
+              {isSeller && (
+                <div className="animate-fade-in">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Business Name</label>
+                  <div className="relative">
+                    <Store className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      required
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      placeholder="e.g. Ade Drinks Ltd"
+                      className="input pl-10"
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">This will be your public storefront name.</p>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
                 <div className="relative">

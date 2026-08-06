@@ -4,38 +4,49 @@ import type { Database } from '../types/database';
 
 export type Product = Database['public']['Tables']['products']['Row'];
 
-export function useProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
+export interface ProductWithCompany extends Product {
+  company: { id: string; name: string; slug: string } | null;
+}
+
+export function useProducts(options?: { includeInactive?: boolean; companyId?: string }) {
+  const [products, setProducts] = useState<ProductWithCompany[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const { data, error: err } = await supabase
+    let query = supabase
       .from('products')
-      .select('*')
-      .eq('active', true)
-      .order('name', { ascending: true });
+      .select('*, company:companies(id, name, slug)');
+
+    if (!options?.includeInactive) {
+      query = query.eq('active', true);
+    }
+    if (options?.companyId) {
+      query = query.eq('company_id', options.companyId);
+    }
+
+    const { data, error: err } = await query.order('name', { ascending: true });
     if (err) {
       setError(err.message);
     } else {
-      setProducts(data || []);
+      setProducts((data as unknown as ProductWithCompany[]) || []);
     }
     setLoading(false);
-  }, []);
+  }, [options?.includeInactive, options?.companyId]);
 
   const createProduct = async (product: Omit<Product, 'id' | 'created_at' | 'updated_at'>) => {
     const { data, error: err } = await supabase.from('products').insert(product).select().single();
     if (err) return { error: err };
-    setProducts((prev) => [...prev, data]);
+    setProducts((prev) => [...prev, { ...data, company: null }]);
     return { data, error: null };
   };
 
   const updateProduct = async (id: string, updates: Partial<Product>) => {
     const { data, error: err } = await supabase.from('products').update(updates).eq('id', id).select().single();
     if (err) return { error: err };
-    setProducts((prev) => prev.map((p) => (p.id === id ? data : p)));
+    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
     return { data, error: null };
   };
 

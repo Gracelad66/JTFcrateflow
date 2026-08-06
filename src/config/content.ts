@@ -10,8 +10,8 @@ import { Truck, TrendingDown, ShieldCheck } from 'lucide-react';
 // ─── Brand ──────────────────────────────────────────────────────────────────
 
 export const BRAND = {
-  name: 'CrateFlow',
-  tagline: 'Wholesale Drinks',
+  name: 'CrateFlow NG',
+  tagline: 'Wholesale Drinks Marketplace',
   logo: 'Package', // lucide-react icon name used in headers
 };
 
@@ -43,9 +43,9 @@ export const TRUST_BADGES = [
 // ─── Catalog Hero ────────────────────────────────────────────────────────────
 
 export const CATALOG_HERO = {
-  headline: 'Wholesale soft drinks, delivered fast.',
+  headline: 'Nigeria\'s wholesale drinks marketplace.',
   subheadline:
-    'Order premium drinks by the crate at wholesale prices. Pay online or on delivery. Return empty crates to save more.',
+    'Order premium drinks by the crate from multiple sellers at wholesale prices. Pay online or on delivery. Return empty crates to save more.',
   ctaBrowse: 'Browse Drinks',
   ctaRegister: 'Create Account',
 };
@@ -84,7 +84,7 @@ export const REGISTER_PAGE = {
     { heading: 'Easy', description: 'Crate exchanges' },
   ],
   formTitle: 'Create account',
-  formSubtitle: 'Join CrateFlow to start ordering wholesale drinks.',
+  formSubtitle: 'Join CrateFlow NG to start ordering or selling wholesale drinks.',
   ctaLabel: 'Create Account',
   ctaLoadingLabel: 'Creating account...',
   loginPrompt: 'Already have an account?',

@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useProducts, type Product } from '../hooks/useProducts';
+import { useState, useMemo } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useProducts, type ProductWithCompany } from '../hooks/useProducts';
+import { useCompanies } from '../hooks/useCompanies';
 import { useAuth } from '../hooks/useAuth';
 import {
   ShoppingCart,
@@ -9,16 +10,18 @@ import {
   Search,
   Package,
   ChevronRight,
+  Store,
 } from 'lucide-react';
 import { CATALOG_HERO, TRUST_BADGES } from '../config/content';
 
 interface CartItem {
-  product: Product;
+  product: ProductWithCompany;
   quantity: number;
 }
 
 export default function Catalog() {
   const { products, loading, error } = useProducts();
+  const { companies } = useCompanies();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -26,6 +29,12 @@ export default function Catalog() {
     return saved ? JSON.parse(saved) : [];
   });
   const [search, setSearch] = useState('');
+  const [sellerFilter, setSellerFilter] = useState<string>('all');
+
+  const sellerOptions = useMemo(() => {
+    const ids = new Set(products.map((p) => p.company_id));
+    return companies.filter((c) => ids.has(c.id));
+  }, [products, companies]);
 
   const updateCart = (items: CartItem[]) => {
     setCart(items);
@@ -72,7 +81,8 @@ export default function Catalog() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
+    p.name.toLowerCase().includes(search.toLowerCase()) &&
+    (sellerFilter === 'all' || p.company_id === sellerFilter)
   );
 
   const inStock = products.filter((p) => p.filled_stock > 0).length;
@@ -130,7 +140,7 @@ export default function Catalog() {
         ))}
       </section>
 
-      {/* Search */}
+      {/* Search + Seller filter */}
       <div className="flex items-center justify-between gap-3" id="catalog-grid">
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -142,6 +152,16 @@ export default function Catalog() {
             className="input pl-10"
           />
         </div>
+        <select
+          value={sellerFilter}
+          onChange={(e) => setSellerFilter(e.target.value)}
+          className="input max-w-[160px] cursor-pointer"
+        >
+          <option value="all">All sellers</option>
+          {sellerOptions.map((c) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
         {user && cartCount > 0 && (
           <button
             onClick={() => navigate('/cart')}
@@ -229,6 +249,11 @@ export default function Catalog() {
 
                 <div className="p-4">
                   <h3 className="font-semibold text-slate-900 text-sm">{product.name}</h3>
+                  {product.company && (
+                    <Link to={`/sellers/${product.company.slug}`} className="inline-flex items-center gap-1 mt-1 text-xs text-brand-600 hover:text-brand-700 font-medium">
+                      <Store className="w-3 h-3" /> {product.company.name}
+                    </Link>
+                  )}
                   {product.description && (
                     <p className="text-xs text-slate-500 mt-1 line-clamp-2">{product.description}</p>
                   )}

@@ -14,11 +14,13 @@ import {
   X,
   Truck,
   Home as HomeIcon,
+  Store,
+  Users,
 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Layout() {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, isSeller, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,15 +34,24 @@ export default function Layout() {
     { path: '/catalog', label: 'Catalog', icon: Package },
     { path: '/cart', label: 'Cart', icon: ShoppingCart },
     { path: '/orders', label: 'My Orders', icon: ClipboardList },
+    { path: '/sellers', label: 'Sellers', icon: Store },
+  ];
+
+  const sellerLinks = [
+    { path: '/seller', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/seller/products', label: 'My Products', icon: Boxes },
+    { path: '/seller/orders', label: 'Orders', icon: ClipboardList },
+    { path: '/catalog', label: 'Browse', icon: Package },
   ];
 
   const adminLinks = [
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/products', label: 'Products', icon: Boxes },
     { path: '/admin/orders', label: 'Orders', icon: ClipboardList },
+    { path: '/admin/sellers', label: 'Sellers', icon: Users },
   ];
 
-  const navLinks = isAdmin ? adminLinks : customerLinks;
+  const navLinks = isAdmin ? adminLinks : isSeller ? sellerLinks : customerLinks;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -83,6 +94,7 @@ export default function Layout() {
                   <div className="flex flex-col leading-none">
                     <span className="font-medium text-slate-800 text-xs truncate max-w-[120px]">{user.full_name || user.email}</span>
                     {isAdmin && <span className="text-[10px] text-brand-600 font-semibold mt-0.5">Admin</span>}
+                {isSeller && <span className="text-[10px] text-accent-600 font-semibold mt-0.5">Seller</span>}
                   </div>
                 </div>
                 <NotificationsBell />

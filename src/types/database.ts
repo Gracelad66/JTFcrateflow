@@ -15,7 +15,8 @@ export interface Database {
           email: string;
           full_name: string | null;
           phone: string | null;
-          role: 'admin' | 'customer';
+          role: 'admin' | 'seller' | 'customer';
+          company_id: string | null;
           created_at: string | null;
           updated_at: string | null;
         };
@@ -24,7 +25,8 @@ export interface Database {
           email: string;
           full_name?: string | null;
           phone?: string | null;
-          role?: 'admin' | 'customer';
+          role?: 'admin' | 'seller' | 'customer';
+          company_id?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -33,7 +35,8 @@ export interface Database {
           email?: string;
           full_name?: string | null;
           phone?: string | null;
-          role?: 'admin' | 'customer';
+          role?: 'admin' | 'seller' | 'customer';
+          company_id?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -42,6 +45,55 @@ export interface Database {
             foreignKeyName: 'profiles_id_fkey';
             columns: ['id'];
             referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'profiles_company_id_fkey';
+            columns: ['company_id'];
+            referencedRelation: 'companies';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      companies: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+          logo_url: string | null;
+          owner_id: string;
+          active: boolean;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          description?: string | null;
+          logo_url?: string | null;
+          owner_id: string;
+          active?: boolean;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          description?: string | null;
+          logo_url?: string | null;
+          owner_id?: string;
+          active?: boolean;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'companies_owner_id_fkey';
+            columns: ['owner_id'];
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           }
         ];
@@ -58,6 +110,7 @@ export interface Database {
           filled_stock: number;
           empty_stock: number;
           active: boolean;
+          company_id: string;
           created_at: string | null;
           updated_at: string | null;
         };
@@ -72,6 +125,7 @@ export interface Database {
           filled_stock?: number;
           empty_stock?: number;
           active?: boolean;
+          company_id: string;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -86,10 +140,18 @@ export interface Database {
           filled_stock?: number;
           empty_stock?: number;
           active?: boolean;
+          company_id?: string;
           created_at?: string | null;
           updated_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'products_company_id_fkey';
+            columns: ['company_id'];
+            referencedRelation: 'companies';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       orders: {
         Row: {

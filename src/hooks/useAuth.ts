@@ -71,5 +71,5 @@ export function useAuth() {
     setUser(null);
   };
 
-  return { user, loading, signIn, signUp, signOut, isAdmin: user?.role === 'admin' };
+  return { user, loading, signIn, signUp, signOut, isAdmin: user?.role === 'admin', isSeller: user?.role === 'seller' };
 }
