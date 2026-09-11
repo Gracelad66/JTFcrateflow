@@ -14,9 +14,11 @@ import {
 } from 'lucide-react';
 import type { Order } from '../hooks/useOrders';
 
-const STATUS_CONFIG: Record<Order['status'], { label: string; badge: string; icon: typeof Clock }> = {
+const STATUS_CONFIG: Partial<Record<Order['status'], { label: string; badge: string; icon: typeof Clock }>> = {
   pending: { label: 'Pending', badge: 'badge-warning', icon: Clock },
+  awaiting_payment: { label: 'Awaiting Payment', badge: 'badge-warning', icon: Clock },
   fulfilled: { label: 'Fulfilled', badge: 'badge-info', icon: Truck },
+  paid: { label: 'Paid', badge: 'badge-success', icon: CheckCircle2 },
   cancelled: { label: 'Cancelled', badge: 'badge-danger', icon: XCircle },
 };
 
@@ -65,7 +67,7 @@ export default function AdminOrders() {
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
             }`}
           >
-            {f === 'all' ? 'All' : STATUS_CONFIG[f as Order['status']].label}
+            {f === 'all' ? 'All' : STATUS_CONFIG[f as Order['status']]?.label || f}
             <span className={`ml-1.5 ${filter === f ? 'text-brand-100' : 'text-slate-400'}`}>{counts[f]}</span>
           </button>
         ))}
@@ -95,7 +97,7 @@ export default function AdminOrders() {
         <div className="space-y-3">
           {filteredOrders.map((order) => {
             const expanded = expandedId === order.id;
-            const Status = STATUS_CONFIG[order.status];
+            const Status = STATUS_CONFIG[order.status] || { label: order.status, badge: 'badge-neutral', icon: Clock };
             const items = order.items || [];
             const isActionLoading = actionLoading === order.id;
 

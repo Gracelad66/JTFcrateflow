@@ -7,7 +7,6 @@ import {
   Package,
   ShoppingCart,
   TrendingUp,
-  Boxes,
   ArrowRight,
   Clock,
   Wallet,
@@ -30,7 +29,6 @@ export default function AdminDashboard() {
   const totalOrders = orders.length;
   const pendingOrders = orders.filter((o) => o.status === 'pending').length;
   const totalFilledStock = products.reduce((sum, p) => sum + p.filled_stock, 0);
-  const totalEmptyStock = products.reduce((sum, p) => sum + p.empty_stock, 0);
   const lowStockProducts = products.filter((p) => p.filled_stock > 0 && p.filled_stock <= 10);
   const outOfStockProducts = products.filter((p) => p.filled_stock === 0);
 

@@ -385,7 +385,10 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      fulfill_order: {
+        Args: { p_order_id: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;

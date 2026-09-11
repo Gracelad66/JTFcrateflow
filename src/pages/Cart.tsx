@@ -315,7 +315,7 @@ export default function Cart() {
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : 'Place Order'}
             </button>
             <p className="text-[11px] text-slate-400 text-center">
-              By placing this order you agree to CrateFlow's terms of service.
+              By placing this order you agree to CrateFlow NG's terms of service.
             </p>
           </div>
         </div>

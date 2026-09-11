@@ -4,7 +4,6 @@ import {
   Package,
   ChevronRight,
   Clock,
-  CheckCircle2,
   XCircle,
   Banknote,
   MapPin,

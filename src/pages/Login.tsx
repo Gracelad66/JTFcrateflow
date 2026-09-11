@@ -42,7 +42,7 @@ export default function Login() {
             <div className="w-10 h-10 bg-white/15 backdrop-blur rounded-xl flex items-center justify-center">
               <Package className="w-6 h-6" strokeWidth={2.5} />
             </div>
-            <span className="font-display font-bold text-xl">CrateFlow</span>
+            <span className="font-display font-bold text-xl">CrateFlow NG</span>
           </div>
           <div className="relative">
             <h2 className="font-display text-4xl font-extrabold leading-tight mb-3 text-balance">
@@ -73,7 +73,7 @@ export default function Login() {
               <div className="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
                 <Package className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
-              <span className="font-display font-bold text-lg text-slate-900">CrateFlow</span>
+              <span className="font-display font-bold text-lg text-slate-900">CrateFlow NG</span>
             </div>
             <h1 className="font-display text-2xl font-bold text-slate-900 mb-1">{LOGIN_PAGE.formTitle}</h1>
             <p className="text-sm text-slate-500 mb-6">{LOGIN_PAGE.formSubtitle}</p>

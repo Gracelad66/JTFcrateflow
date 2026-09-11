@@ -41,7 +41,7 @@ export default function Catalog() {
     localStorage.setItem('cart', JSON.stringify(items));
   };
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductWithCompany) => {
     const existing = cart.find((item) => item.product.id === product.id);
     if (existing) {
       updateCart(
@@ -73,7 +73,7 @@ export default function Catalog() {
     );
   };
 
-  const getPrice = (product: Product, qty: number) => {
+  const getPrice = (product: ProductWithCompany, qty: number) => {
     return qty >= product.wholesale_threshold ? product.wholesale_price : product.retail_price;
   };
 

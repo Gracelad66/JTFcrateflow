@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useProducts, type Product } from '../hooks/useProducts';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';

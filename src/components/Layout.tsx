@@ -71,8 +71,8 @@ export default function Layout() {
                 <Package className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
               <div className="text-left">
-                <span className="font-display font-bold text-slate-900 text-lg leading-none block">CrateFlow</span>
-                <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase hidden sm:block leading-none mt-0.5">Wholesale Drinks</span>
+                <span className="font-display font-bold text-slate-900 text-lg leading-none block">CrateFlow NG</span>
+                <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase hidden sm:block leading-none mt-0.5">Drinks Marketplace</span>
               </div>
             </button>
           </div>
@@ -135,7 +135,7 @@ export default function Layout() {
               <div className="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
                 <Package className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
-              <span className="font-display font-bold text-slate-900 text-lg">CrateFlow</span>
+              <span className="font-display font-bold text-slate-900 text-lg">CrateFlow NG</span>
             </div>
             <nav className="space-y-1">
               {navLinks.map((link) => (
