@@ -26,11 +26,12 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => {
-    if (path === '/' && location.pathname === '/') return true;
-    return location.pathname.startsWith(path) && path !== '/';
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
   };
 
   const customerLinks = [
+    { path: '/', label: 'Home', icon: HomeIcon },
     { path: '/catalog', label: 'Catalog', icon: Package },
     { path: '/cart', label: 'Cart', icon: ShoppingCart },
     { path: '/orders', label: 'My Orders', icon: ClipboardList },

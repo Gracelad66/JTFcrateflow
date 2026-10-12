@@ -15,6 +15,8 @@ import SellerOrders from './pages/SellerOrders';
 import Sellers from './pages/Sellers';
 import SellerStorefront from './pages/SellerStorefront';
 import AdminSellers from './pages/AdminSellers';
+import Landing from './pages/Landing';
+import ProductDetail from './pages/ProductDetail';
 import { Package } from 'lucide-react';
 
 function App() {
@@ -39,11 +41,12 @@ function App() {
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
         <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
         <Route element={<Layout />}>
-          <Route path="/" element={user?.role === 'admin' ? <AdminDashboard /> : user?.role === 'seller' ? <SellerDashboard /> : <Catalog />} />
+          <Route path="/" element={!user ? <Landing /> : user?.role === 'admin' ? <AdminDashboard /> : user?.role === 'seller' ? <SellerDashboard /> : <Catalog />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
           <Route path="/orders" element={user ? <MyOrders /> : <Navigate to="/login" />} />
           <Route path="/sellers" element={<Sellers />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/sellers/:slug" element={<SellerStorefront />} />
           {/* Seller routes */}
           <Route path="/seller" element={user?.role === 'seller' || user?.role === 'admin' ? <SellerDashboard /> : <Navigate to="/" />} />
@@ -54,6 +57,7 @@ function App() {
           <Route path="/admin/products" element={user?.role === 'admin' ? <AdminProducts /> : <Navigate to="/" />} />
           <Route path="/admin/orders" element={user?.role === 'admin' ? <AdminOrders /> : <Navigate to="/" />} />
           <Route path="/admin/sellers" element={user?.role === 'admin' ? <AdminSellers /> : <Navigate to="/" />} />
+          <Route path="*" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-900 font-display mb-2">Page not found</h1><p className="text-sm text-slate-500 mb-4">The page you're looking for doesn't exist.</p><a href="/" className="btn-primary">Go Home</a></div>} />
         </Route>
       </Routes>
     </BrowserRouter>

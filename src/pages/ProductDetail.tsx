@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useProducts, type ProductWithCompany } from '../hooks/useProducts';
@@ -42,7 +42,7 @@ export default function ProductDetail() {
   const [userReview, setUserReview] = useState<{ id: string; rating: number; comment: string | null } | null>(null);
 
   // Load product
-  useState(() => {
+  useEffect(() => {
     if (!id) return;
     setLoading(true);
     supabase
@@ -54,10 +54,10 @@ export default function ProductDetail() {
         if (!error && data) setProduct(data as unknown as ProductWithCompany);
         setLoading(false);
       });
-  });
+  }, [id]);
 
   // Check if current user already has a review
-  useState(() => {
+  useEffect(() => {
     if (!user || !id) return;
     supabase
       .from('reviews')
@@ -68,7 +68,7 @@ export default function ProductDetail() {
       .then(({ data }) => {
         if (data) setUserReview(data as { id: string; rating: number; comment: string | null });
       });
-  });
+  }, [user, id]);
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];

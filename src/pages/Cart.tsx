@@ -8,11 +8,13 @@ import {
   Plus,
   Trash2,
   Banknote,
+  CreditCard,
   Package,
   AlertCircle,
   CheckCircle2,
   MapPin,
   Loader2,
+  Link as LinkIcon,
 } from 'lucide-react';
 
 interface CartItem {
@@ -43,6 +45,7 @@ export default function Cart() {
   const [orderId, setOrderId] = useState('');
   const [deliveryLocation, setDeliveryLocation] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'cash_on_delivery' | 'online'>('cash_on_delivery');
 
   const updateCart = (items: CartItem[]) => {
     setCart(items);
@@ -89,7 +92,7 @@ export default function Cart() {
       unit_price: getPrice(item),
     }));
 
-    const { data, error: err } = await createOrder(items, 'cash_on_delivery', emptyCrates, deliveryLocation, deliveryNotes);
+    const { data, error: err } = await createOrder(items, paymentMethod, emptyCrates, deliveryLocation, deliveryNotes);
 
     setLoading(false);
     if (err) {
@@ -243,14 +246,51 @@ export default function Cart() {
           {/* Payment Method */}
           <div className="card p-4">
             <h3 className="font-semibold text-slate-900 text-sm mb-3">Payment Method</h3>
-            <div className="flex items-center gap-3 p-3 rounded-xl border border-brand-200 bg-brand-50 text-sm">
-              <Banknote className="w-5 h-5 text-brand-600" />
-              <div className="text-left flex-1">
-                <p className="font-medium text-slate-900">Pay on Delivery</p>
-                <p className="text-xs text-slate-500">Pay in cash when your crates are delivered</p>
-              </div>
-              <div className="w-4 h-4 rounded-full border-2 border-brand-600 bg-brand-600" />
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('cash_on_delivery')}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl border text-sm text-left transition-all ${
+                  paymentMethod === 'cash_on_delivery'
+                    ? 'border-brand-300 bg-brand-50 ring-1 ring-brand-200'
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <Banknote className={`w-5 h-5 ${paymentMethod === 'cash_on_delivery' ? 'text-brand-600' : 'text-slate-400'}`} />
+                <div className="flex-1">
+                  <p className="font-medium text-slate-900">Pay on Delivery</p>
+                  <p className="text-xs text-slate-500">Pay in cash when your crates are delivered</p>
+                </div>
+                <div className={`w-4 h-4 rounded-full border-2 transition-all ${
+                  paymentMethod === 'cash_on_delivery' ? 'border-brand-600 bg-brand-600' : 'border-slate-300'
+                }`} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('online')}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl border text-sm text-left transition-all ${
+                  paymentMethod === 'online'
+                    ? 'border-brand-300 bg-brand-50 ring-1 ring-brand-200'
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <CreditCard className={`w-5 h-5 ${paymentMethod === 'online' ? 'text-brand-600' : 'text-slate-400'}`} />
+                <div className="flex-1">
+                  <p className="font-medium text-slate-900">Pay Online</p>
+                  <p className="text-xs text-slate-500">Card or bank transfer via Moniepoint</p>
+                </div>
+                <div className={`w-4 h-4 rounded-full border-2 transition-all ${
+                  paymentMethod === 'online' ? 'border-brand-600 bg-brand-600' : 'border-slate-300'
+                }`} />
+              </button>
             </div>
+            {paymentMethod === 'online' && (
+              <div className="mt-3 flex items-center gap-2 text-xs text-brand-600 bg-brand-50 p-2.5 rounded-lg border border-brand-100">
+                <LinkIcon className="w-3.5 h-3.5 shrink-0" />
+                <span>You'll be redirected to complete payment after placing your order.</span>
+              </div>
+            )}
           </div>
 
           {/* Delivery Location */}
@@ -312,7 +352,7 @@ export default function Cart() {
               </div>
             )}
             <button onClick={handleCheckout} disabled={loading} className="btn-primary w-full">
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : 'Place Order'}
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : paymentMethod === 'online' ? 'Place Order & Pay Online' : 'Place Order'}
             </button>
             <p className="text-[11px] text-slate-400 text-center">
               By placing this order you agree to CrateFlow NG's terms of service.

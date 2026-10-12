@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Store,
   Star,
+  ArrowRight,
 } from 'lucide-react';
 import { CATALOG_HERO, TRUST_BADGES } from '../config/content';
 
@@ -260,7 +261,7 @@ export default function Catalog() {
 
             return (
               <div key={product.id} className="card overflow-hidden group hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-                <div className="relative h-40 bg-gradient-to-br from-slate-50 to-slate-100 overflow-hidden">
+                <Link to={`/products/${product.id}`} className="block relative h-40 bg-gradient-to-br from-slate-50 to-slate-100 overflow-hidden">
                   {product.image_url ? (
                     <img
                       src={product.image_url}
@@ -283,10 +284,12 @@ export default function Catalog() {
                     )}
                     {isWholesale && <span className="badge-info">Wholesale</span>}
                   </div>
-                </div>
+                </Link>
 
                 <div className="p-4">
-                  <h3 className="font-semibold text-slate-900 text-sm">{product.name}</h3>
+                  <Link to={`/products/${product.id}`}>
+                    <h3 className="font-semibold text-slate-900 text-sm hover:text-brand-600 transition-colors">{product.name}</h3>
+                  </Link>
                   {product.company && (
                     <Link to={`/sellers/${product.company.slug}`} className="inline-flex items-center gap-1 mt-1 text-xs text-brand-600 hover:text-brand-700 font-medium">
                       <Store className="w-3 h-3" /> {product.company.name}

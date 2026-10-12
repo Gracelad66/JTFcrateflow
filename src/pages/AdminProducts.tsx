@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useProducts, type Product } from '../hooks/useProducts';
+import { useCategories } from '../hooks/useCategories';
 import { supabase } from '../lib/supabase';
 import {
   Plus,
@@ -24,6 +25,7 @@ interface ProductForm {
   filled_stock: number;
   empty_stock: number;
   image_url: string;
+  category_id: string;
   active: boolean;
 }
 
@@ -36,11 +38,13 @@ const EMPTY_FORM: ProductForm = {
   filled_stock: 0,
   empty_stock: 0,
   image_url: '',
+  category_id: '',
   active: true,
 };
 
 export default function AdminProducts() {
   const { products, loading, error, refresh, createProduct, updateProduct, deleteProduct } = useProducts();
+  const { categories } = useCategories();
   const [form, setForm] = useState<ProductForm>(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formError, setFormError] = useState('');
@@ -70,6 +74,7 @@ export default function AdminProducts() {
       filled_stock: product.filled_stock,
       empty_stock: product.empty_stock,
       image_url: product.image_url || '',
+      category_id: product.category_id || '',
       active: product.active,
     });
     setEditingId(product.id);
@@ -104,6 +109,7 @@ export default function AdminProducts() {
       empty_stock: Number(form.empty_stock),
       image_url: form.image_url || null,
       active: form.active,
+      category_id: form.category_id || null,
     };
 
     const result = editingId
@@ -355,6 +361,20 @@ export default function AdminProducts() {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Description</label>
                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="input resize-none" placeholder="Optional product details" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Category</label>
+                <select
+                  value={form.category_id}
+                  onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+                  className="input cursor-pointer"
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
