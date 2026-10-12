@@ -111,6 +111,7 @@ export interface Database {
           empty_stock: number;
           active: boolean;
           company_id: string;
+          category_id: string | null;
           created_at: string | null;
           updated_at: string | null;
         };
@@ -126,6 +127,7 @@ export interface Database {
           empty_stock?: number;
           active?: boolean;
           company_id: string;
+          category_id?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -141,6 +143,7 @@ export interface Database {
           empty_stock?: number;
           active?: boolean;
           company_id?: string;
+          category_id?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
@@ -376,6 +379,76 @@ export interface Database {
             foreignKeyName: 'customer_product_interest_product_id_fkey';
             columns: ['product_id'];
             referencedRelation: 'products';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      categories: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+          icon: string | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          description?: string | null;
+          icon?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          description?: string | null;
+          icon?: string | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
+      };
+      reviews: {
+        Row: {
+          id: string;
+          product_id: string;
+          user_id: string;
+          rating: number;
+          comment: string | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          user_id?: string;
+          rating: number;
+          comment?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          user_id?: string;
+          rating?: number;
+          comment?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'reviews_product_id_fkey';
+            columns: ['product_id'];
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'reviews_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           }
         ];

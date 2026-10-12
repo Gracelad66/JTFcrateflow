@@ -5,7 +5,7 @@
  * shown on the site without touching the component files.
  */
 
-import { Truck, TrendingDown, ShieldCheck } from 'lucide-react';
+import { Truck, TrendingDown, ShieldCheck, Store, Package, CreditCard, Repeat } from 'lucide-react';
 
 // ─── Brand ──────────────────────────────────────────────────────────────────
 
@@ -48,6 +48,69 @@ export const CATALOG_HERO = {
     'Order premium drinks by the crate from multiple sellers at wholesale prices. Pay online or on delivery. Return empty crates to save more.',
   ctaBrowse: 'Browse Drinks',
   ctaRegister: 'Create Account',
+};
+
+// ─── Landing Page ────────────────────────────────────────────────────────────
+
+export const LANDING_PAGE = {
+  heroHeadline: 'Nigeria\'s #1 wholesale drinks marketplace',
+  heroSubheadline:
+    'Order premium drinks by the crate from multiple sellers at wholesale prices. Pay online or on delivery. Return empty crates to save even more.',
+  heroCtaBrowse: 'Browse Catalog',
+  heroCtaRegister: 'Start Selling',
+  stats: [
+    { value: '500+', label: 'Products' },
+    { value: '50+', label: 'Sellers' },
+    { value: '24h', label: 'Delivery' },
+    { value: '100%', label: 'Verified' },
+  ],
+  howItWorks: [
+    {
+      icon: Package,
+      title: 'Browse & Order',
+      description: 'Explore thousands of drinks from multiple sellers. Add to cart and order by the crate at wholesale prices.',
+    },
+    {
+      icon: CreditCard,
+      title: 'Pay Your Way',
+      description: 'Pay securely online with card or bank transfer, or choose cash on delivery — whichever works for you.',
+    },
+    {
+      icon: Truck,
+      title: 'Fast Delivery',
+      description: 'Get your crates delivered within 24 hours across Lagos and environs. Track your order every step of the way.',
+    },
+    {
+      icon: Repeat,
+      title: 'Return & Save',
+      description: 'Return empty crates when you reorder to reduce waste and unlock additional savings on every purchase.',
+    },
+  ],
+  sellerCtaHeadline: 'Become a seller on CrateFlow NG',
+  sellerCtaBody: 'Reach thousands of buyers across Nigeria. List your products, manage orders, and grow your drinks business — all from one dashboard.',
+  sellerCtaButton: 'Create Seller Account',
+  features: [
+    {
+      icon: Store,
+      title: 'Multi-Seller Marketplace',
+      description: 'Buy from multiple verified sellers in one order. Compare prices, discover new brands, and support local businesses.',
+    },
+    {
+      icon: TrendingDown,
+      title: 'Wholesale Pricing',
+      description: 'Buy in bulk and unlock automatic wholesale pricing. The more crates you order, the less you pay per unit.',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Secure Payments',
+      description: 'Pay online with confidence or choose cash on delivery. Every transaction is protected and trackable.',
+    },
+    {
+      icon: Repeat,
+      title: 'Crate Exchange',
+      description: 'Return your empty crates on your next order and save. We refill them, you pay less — win-win.',
+    },
+  ],
 };
 
 // ─── Sidebar footer blurb ────────────────────────────────────────────────────
